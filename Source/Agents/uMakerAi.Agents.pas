@@ -1459,11 +1459,13 @@ begin
   end;
   FSuspendedSteps.Free;
   FSuspendedStepsLock.Free;
-  FNodes.Free;
-  FLinks.Free;
   FBusyLock.Free;
   FBlackboard.Free;
   inherited;
+  if Assigned(FNodes) then
+    FNodes.Free;
+  if Assigned(FLinks) then
+    FLinks.Free;
 end;
 
 procedure TAIAgentManager.Abort;
