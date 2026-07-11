@@ -292,6 +292,8 @@ type
     procedure SetPrompt_tokens(const Value: Integer);
     procedure SetTotal_tokens(const Value: Integer);
     procedure SetThinking_tokens(const Value: Integer);
+    procedure SetCacheContext(const Value: Boolean);
+    procedure SetCached_tokens(const Value: Integer);
     procedure SetLastError(const Value: string);
 
     function  GetApiKey: string;
@@ -322,6 +324,8 @@ type
     FTotal_tokens     : Integer;
     FPrompt_tokens    : Integer;
     FThinking_tokens  : Integer;
+    FCacheContext     : Boolean;
+    FCached_tokens    : Integer;
     // Tokens capturados del chunk usage final en SSE (stream_options.include_usage)
     FStreamUsagePrompt    : Integer;
     FStreamUsageCompletion: Integer;
@@ -516,6 +520,8 @@ type
     property Completion_tokens: Integer          read FCompletion_tokens    write SetCompletion_tokens;
     property Total_tokens     : Integer          read FTotal_tokens         write SetTotal_tokens;
     property Thinking_tokens  : Integer          read FThinking_tokens      write SetThinking_tokens;
+    property CacheContext     : Boolean          read FCacheContext          write SetCacheContext;
+    property Cached_tokens    : Integer          read FCached_tokens         write SetCached_tokens;
 
     property OnReceiveData   : TAiChatOnDataEvent    read FOnReceiveDataEvent  write SetOnReceiveDataEvent;
     property OnReceiveDataEnd: TAiChatOnDataEvent    read FOnReceiveDataEnd    write SetOnReceiveDataEnd;
@@ -2888,6 +2894,10 @@ procedure TAiChat.SetTotal_tokens(const Value: Integer);
   begin FTotal_tokens := Value; end;
 procedure TAiChat.SetThinking_tokens(const Value: Integer);
   begin FThinking_tokens := Value; end;
+procedure TAiChat.SetCacheContext(const Value: Boolean);
+  begin FCacheContext := Value; end;
+procedure TAiChat.SetCached_tokens(const Value: Integer);
+  begin FCached_tokens := Value; end;
 procedure TAiChat.SetLastError(const Value: string);
   begin FLastError := Value; end;
 
