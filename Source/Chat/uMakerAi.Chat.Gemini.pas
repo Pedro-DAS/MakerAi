@@ -751,7 +751,7 @@ begin
 
     if Temperature >= 0 then
       JConfig.Add('temperature', TJSONFloatNumber.Create(Temperature));
-    if Top_p >= 0 then
+    if Top_p > 0 then
       JConfig.Add('topP', TJSONFloatNumber.Create(Top_p));
     if Max_tokens > 0 then
       JConfig.Add('maxOutputTokens', TJSONIntegerNumber.Create(Max_tokens));

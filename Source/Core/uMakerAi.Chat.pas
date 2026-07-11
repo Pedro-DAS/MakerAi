@@ -2701,8 +2701,8 @@ var TmpVal: Double;
 begin
   if Value > 1 then
     TmpVal := 1
-  else if Value < 0.1 then
-    TmpVal := 0.1
+  else if Value <= 0 then
+    TmpVal := 0
   else
     TmpVal := Value;
   FTop_p := TmpVal;
