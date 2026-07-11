@@ -567,6 +567,9 @@ implementation
 
 uses UMakerAi.ParamsRegistry, TypInfo;
 
+var
+  LogDebugCS: TCriticalSection;
+
 // ===========================================================================
 //  TToolCallThread — ejecuta una tool call en un thread independiente
 //  Permite paralelizar varias tool calls (equivalente a TTask de Delphi)
@@ -697,24 +700,29 @@ var
   Path : string;
 begin
   if not MakerAiDebugLogEnabled then Exit;
+  LogDebugCS.Enter;
   try
-    if MakerAiDebugLogPath <> '' then
-      Path := MakerAiDebugLogPath
-    else
-      Path := GetTempDir + 'makerai_debug.log';
-    if FileExists(Path) then
-      FS := TFileStream.Create(Path, fmOpenWrite or fmShareDenyNone)
-    else
-      FS := TFileStream.Create(Path, fmCreate or fmShareDenyNone);
     try
-      FS.Seek(0, soEnd);
-      S := Mensaje + LineEnding;
-      FS.WriteBuffer(Pointer(S)^, Length(S));
-    finally
-      FS.Free;
+      if MakerAiDebugLogPath <> '' then
+        Path := MakerAiDebugLogPath
+      else
+        Path := GetTempDir + 'makerai_debug.log';
+      if FileExists(Path) then
+        FS := TFileStream.Create(Path, fmOpenWrite or fmShareDenyNone)
+      else
+        FS := TFileStream.Create(Path, fmCreate or fmShareDenyNone);
+      try
+        FS.Seek(0, soEnd);
+        S := Mensaje + LineEnding;
+        FS.WriteBuffer(Pointer(S)^, Length(S));
+      finally
+        FS.Free;
+      end;
+    except
+      // Silencioso — el log nunca debe interrumpir la request
     end;
-  except
-    // Silencioso — el log nunca debe interrumpir la request
+  finally
+    LogDebugCS.Leave;
   end;
 end;
 
@@ -2912,5 +2920,11 @@ procedure TAiChat.SetCached_tokens(const Value: Integer);
   begin FCached_tokens := Value; end;
 procedure TAiChat.SetLastError(const Value: string);
   begin FLastError := Value; end;
+
+initialization
+  LogDebugCS := TCriticalSection.Create;
+
+finalization
+  LogDebugCS.Free;
 
 end.
