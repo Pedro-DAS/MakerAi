@@ -1262,6 +1262,14 @@ begin
           // Llamar ParseChat con la respuesta sintetica reconstruida
           ParseChat(jSynth, MsgToProcess);
 
+          // Archivar el mensaje assistant en el historial (modo async)
+          // ParseChat ya pudo haberlo agregado (tool calls) — verificar duplicado
+          if FMessages.IndexOf(MsgToProcess) = -1 then
+          begin
+            MsgToProcess.Id := FMessages.Count + 1;
+            FMessages.Add(MsgToProcess);
+          end;
+
         finally
           jSynth.Free;
           FStreamBuffer.Clear;
@@ -1532,6 +1540,7 @@ begin
   Prompt_tokens     := Prompt_tokens     + aPrompt_tokens;
   Completion_tokens := Completion_tokens + aCompletion_tokens;
   Total_tokens      := Total_tokens      + aTotal_tokens;
+  Cached_tokens     := Cached_tokens     + aCached_tokens;
 
   ResMsg.Prompt_tokens     := aPrompt_tokens;
   ResMsg.Completion_tokens := aCompletion_tokens;
