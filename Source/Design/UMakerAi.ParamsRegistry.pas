@@ -252,10 +252,24 @@ end;
 function TAiChatFactory.CreateDriver(const DriverName: string): TAiChat;
 var
   DriverClass: TAiChatClass;
+  DriverList : string;
+  Key        : string;
 begin
-  Result := nil;
-  if FRegisteredClasses.TryGetValue(DriverName, DriverClass) then
-    Result := DriverClass.CreateInstance(nil);
+  if not FRegisteredClasses.TryGetValue(DriverName, DriverClass) then
+  begin
+    DriverList := '';
+    for Key in FRegisteredClasses.Keys do
+    begin
+      if DriverList <> '' then
+        DriverList := DriverList + ', ';
+      DriverList := DriverList + Key;
+    end;
+    raise Exception.CreateFmt(
+      'TAiChatFactory.CreateDriver: Driver "%s" no registrado. ' +
+      'Drivers disponibles: [%s]',
+      [DriverName, DriverList]);
+  end;
+  Result := DriverClass.CreateInstance(nil);
 end;
 
 function TAiChatFactory.GetRegisteredDrivers: TAiStringArray;
@@ -456,10 +470,24 @@ end;
 function TAiEmbeddingFactory.CreateDriver(const DriverName: string): TAiEmbeddings;
 var
   DriverClass: TAiEmbeddingsClass;
+  DriverList : string;
+  Key        : string;
 begin
-  Result := nil;
-  if FRegisteredClasses.TryGetValue(DriverName, DriverClass) then
-    Result := DriverClass.CreateInstance(nil);
+  if not FRegisteredClasses.TryGetValue(DriverName, DriverClass) then
+  begin
+    DriverList := '';
+    for Key in FRegisteredClasses.Keys do
+    begin
+      if DriverList <> '' then
+        DriverList := DriverList + ', ';
+      DriverList := DriverList + Key;
+    end;
+    raise Exception.CreateFmt(
+      'TAiEmbeddingFactory.CreateDriver: Driver "%s" no registrado. ' +
+      'Drivers disponibles: [%s]',
+      [DriverName, DriverList]);
+  end;
+  Result := DriverClass.CreateInstance(nil);
 end;
 
 function TAiEmbeddingFactory.GetRegisteredDrivers: TAiStringArray;
